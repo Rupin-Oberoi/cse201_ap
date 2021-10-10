@@ -278,19 +278,6 @@ class Citizen{
             System.out.println("Only above 18 are allowed");
         }
     }
-    // public void book_slot() {
-    //     System.out.println("Enter ID:");
-    //     long entered_id = scan.nextLong();
-    //     System.out.println("1. Search by area");
-    //     System.out.println("2. Search by vaccine");
-    //     System.out.println("3. Exit");
-    //     System.out.println("Enter option");
-    //     int selection = scan.nextInt();
-    //     if (selection==1){
-    //         System.out.println("Enter pin code");
-    //         int pin=scan.nextInt();
-    //     }
-    // }
     public void change_status(String new_status){
         status = new_status;
     }
