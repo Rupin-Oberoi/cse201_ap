@@ -18,6 +18,7 @@ public class a1 {
 
         
         while (main_selection!=8){
+            System.out.println("Menu Options");
 
             main_selection=scan.nextInt();
             if (main_selection==3){
@@ -81,7 +82,7 @@ public class a1 {
                 }
                 System.out.println(c1.getStatus());
                 System.out.println("Vaccine given: "+ c1.getVaxUsed());
-                System.out.println("Number of doses given:"+0);
+                System.out.println("Number of doses given:"+c1.get_doses());
                 if (c1.getStatus()=="PARTIALLY VACCINATED"){
                     System.out.println("Next Due Date: "+ c1.getDueDate());
                 }
@@ -113,6 +114,29 @@ public class a1 {
                 int search_sel = scan.nextInt();
                 if (search_sel==1){
                     search_pin();
+                    String mis10 = scan.nextLine();
+                    int hospital_id = scan.nextInt();
+                    int slot_len = hoslist.get(hospital_id).getSlist().size();
+                    for (int k=0;k<slot_len;k++){
+                    System.out.println(k+"->Day:"+hoslist.get(hospital_id).getSlist().get(k).getDay()+" Quantity:"+hoslist.get(hospital_id).getSlist().get(k).getQty()+" Vaccine Name: "+ hoslist.get(hospital_id).getSlist().get(k).getVName());
+                    }
+                    mis10 = scan.nextLine();
+                    int vaccine_selected = scan.nextInt();
+                    Citizen c2 = null;
+                    for (int s=0; s<citlist.size();s++){
+                        if (citlist.get(s).getID()==p_id){
+                            c2 = citlist.get(s);
+                            break;
+                        }
+                    }
+                    String name = c2.getName();
+
+                    System.out.println(name + " Vaccinated with "+ hoslist.get(hospital_id).getSlist().get(vaccine_selected).getVName());
+                    c2.change_status("FULLY VACCINATED");
+                    c2.update_vax_used(hoslist.get(hospital_id).getSlist().get(vaccine_selected).getVName());
+                    c2.set_doses();
+
+                    
                 }
                 else if (search_sel==2){
                     search_vax();
@@ -129,15 +153,6 @@ public class a1 {
                 System.out.println(i +" "+a1.hoslist.get(i).getName());
             }
         }
-        String mis10 = scan.nextLine();
-        int hospital_id = scan.nextInt();
-        int slot_len = hoslist.get(hospital_id).getSlist().size();
-        for (int k=0;k<slot_len;k++){
-            System.out.println(k+"->Day:"+hoslist.get(hospital_id).getSlist().get(k).getDay()+" Quantity:"+hoslist.get(hospital_id).getSlist().get(k).getQty()+" Vaccine Name: "+ hoslist.get(hospital_id).getSlist().get(k).getVName());
-        }
-        mis10 = scan.nextLine();
-        int vaccine_selected = scan.nextInt();
-        
     }
     public static void search_vax(){
         System.out.println("Enter vaccine name");
@@ -217,6 +232,7 @@ class Citizen{
     private int prev_date;
     private int due_date;
     private String vax_used;
+    private int doses_given;
 
     public Citizen(String n, long i, int a){
         name=n;
@@ -226,6 +242,18 @@ class Citizen{
         if (age<18){
             status="LOW AGE";
         }
+    }
+    public void update_vax_used(String v_name){
+        this.vax_used = v_name;
+    }
+    public void set_doses(){
+        this.doses_given+=1;
+    }
+    public int get_doses(){
+        return this.doses_given;
+    }
+    public String getName(){
+        return this.name;
     }
     public long getID() {
         return this.id;
