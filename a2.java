@@ -13,6 +13,7 @@ public class a2 {
     public static ArrayList<Submission> sublist = new ArrayList<Submission>();
     public static Scanner scan = new Scanner(System.in);
     public static void main(String[] args) {
+        Course ap = new Course("AP");
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         instlist.add(new Instructor("I0", 1));
         instlist.add(new Instructor("I1",1));
@@ -29,6 +30,7 @@ public class a2 {
         @SuppressWarnings("unused")
         String misc = scan.nextLine();
         if (sel1==3){
+            System.out.println("Thanks for using BACKPACK! \n");
             break;
         }
         else if (sel1==1){
@@ -89,7 +91,7 @@ public class a2 {
                     for (int i=0;i<vidlist.size();i++){
                         System.out.println("Title: "+vidlist.get(i).getTitle());
                         System.out.println("Video file: "+vidlist.get(i).getFile());
-                        System.out.println("Time of upload: "+ dtf.format(vidlist.get(i).getTime()));
+                        System.out.println("Time of upload: "+ dtf.format(vidlist.get(i).getTime())+" IST");
                         System.out.println("Uploaded by: "+vidlist.get(i).getUpld().getName());
                         System.out.println(" ");
                     }
@@ -98,7 +100,7 @@ public class a2 {
                         for (int j=0; j<sldlist.get(i).getNsld();j++){
                             System.out.println("Slide "+j+": "+sldlist.get(i).getSlides()[j]);
                         }
-                        System.out.println("Time of upload: "+dtf.format(sldlist.get(i).getTime()));
+                        System.out.println("Time of upload: "+dtf.format(sldlist.get(i).getTime())+" IST");
                         System.out.println("Uploaded by: "+sldlist.get(i).getUpldr().getName());
                         System.out.println(" ");
                     }
@@ -115,7 +117,6 @@ public class a2 {
                     sel4 = scan.nextInt();
                     misc = scan.nextLine();
                     assmlist.get(sel4).setStatus(1);
-
                 }
                 else if (sel3==4){
                     for (int i=0; i<assmlist.size();i++){
@@ -155,7 +156,7 @@ public class a2 {
                 else if (sel3==7){
                     for (int i=0;i<commlist.size();i++){
                         System.out.println(commlist.get(i).getContent()+" - "+commlist.get(i).getUser().getName());
-                        System.out.println(dtf.format(commlist.get(i).getTime()));
+                        System.out.println(dtf.format(commlist.get(i).getTime())+" IST");
                     }
                 }
                 else if (sel3==8){
@@ -180,9 +181,10 @@ public class a2 {
                     for (int i =0; i<sldlist.size();i++){
                         System.out.println("Title: "+sldlist.get(i).getTopic());
                         for (int j=0; j<sldlist.get(i).getNsld();j++){
-                            System.out.println("Slide "+j+": "+sldlist.get(i).getSlides()[j]);
+                            System.out.println("Slide "+(j+1)+": "+sldlist.get(i).getSlides()[j]);
                         }
-                        System.out.println("Time of upload: "+dtf.format(sldlist.get(i).getTime()));
+                        System.out.println("Number of slides: "+sldlist.get(i).getNsld());
+                        System.out.println("Time of upload: "+dtf.format(sldlist.get(i).getTime())+" IST");
                         System.out.println("Uploaded by: "+sldlist.get(i).getUpldr().getName());
                         System.out.println(" ");
                     }
@@ -202,20 +204,21 @@ public class a2 {
                             System.out.println("Submission: "+ sublist.get(i).getAns());
                             System.out.println("Marks scored :"+sublist.get(i).getScore());
                             System.out.println("Graded by: "+sublist.get(i).getChecker().getName());
+                            System.out.println(" ");
                         }
                     }
                     System.out.println("Ungraded submissions");
                     for (int i=0; i<sublist.size();i++){
                         if (sublist.get(i).getStudent()==s_user && sublist.get(i).getStatus()==0){
                             System.out.println("Submission: "+ sublist.get(i).getAns());
-                            
+                            System.out.println(" ");
                         }
                     }
                 }
                 else if (sel3==5){
                     for (int i=0;i<commlist.size();i++){
                         System.out.println(commlist.get(i).getContent()+" - "+commlist.get(i).getUser().getName());
-                        System.out.println(dtf.format(commlist.get(i).getTime()));
+                        System.out.println(dtf.format(commlist.get(i).getTime())+" IST");
                     }
                 }
                 else if (sel3==6){
@@ -223,9 +226,14 @@ public class a2 {
                 }
             }
         }
-        
     }
 }   
+}
+class Course{
+    private String c_name;
+    public Course(String n){
+        this.c_name = n;
+    }
 }
 class Submission {
     private Student doer;
@@ -301,12 +309,13 @@ class Instructor implements User{
         System.out.print("Enter filename of video:- ");
         String vid_name = a2.scan.nextLine();
         int len1 = vid_name.length();
-        String vid_ext = vid_name.substring(len1-4);
-        while (!vid_ext.equals(".mp4")) {
-            System.out.println("Invalid file extension. Try again:");
+        String vid_ext="abcd";
+        if (vid_name.length()>=4)
+            vid_ext = vid_name.substring(len1-4);
+        while (vid_name.length()<5 || !vid_ext.equals(".mp4")) {
+            System.out.println("Invalid file name. Try again:");
             vid_name = a2.scan.nextLine();
             len1 = vid_name.length();
-            System.out.println(vid_ext);
             vid_ext = vid_name.substring(len1-4);
         }
         a2.vidlist.add(new Video(vid_title, vid_name, this));
@@ -322,7 +331,7 @@ class Instructor implements User{
         a2.assmlist.add(a2.asslist.get(a2.asslist.size()-1));
     }
     public void putQuiz(){
-        System.out.print("Enter quiz question");
+        System.out.print("Enter quiz question: ");
         String ques = a2.scan.nextLine();
         a2.quizlist.add(new Quiz(this, ques));
         a2.assmlist.add(a2.quizlist.get(a2.quizlist.size()-1));
@@ -337,10 +346,8 @@ class Instructor implements User{
 }
 class Student implements User{
     private String name;
-    private boolean[] sub_status;
     public Student(String n){
         this.name = n;
-        this.sub_status = new boolean[a2.assmlist.size()];
     }
     public String getName(){
         return this.name;
@@ -353,6 +360,7 @@ class Student implements User{
     public void seePending(){
         int count=0;
         int sel4=-1;
+        @SuppressWarnings("unused")
         String misc;
         for (int i=0; i<a2.assmlist.size();i++){
             if (!a2.assmlist.get(i).getSubmitters().contains(this) && a2.assmlist.get(i).getStatus()=="OPEN"){
@@ -373,16 +381,25 @@ class Student implements User{
             sel4 = a2.scan.nextInt();
             misc = a2.scan.nextLine();
             String file_name=null;
-            String extn;
+            //String extn;
             if (a2.assmlist.get(sel4).getType()=="Assignment"){
             System.out.print("Enter file name of submission: ");
             file_name = a2.scan.nextLine();
-            extn = file_name.substring(file_name.length()-4);
-            while (!extn.equals(".zip")){
-                System.out.print("Invalid extension. Try again: ");
-                file_name = a2.scan.nextLine();
+            // extn = file_name.substring(file_name.length()-4);
+            // while (!extn.equals(".zip")){
+            //     System.out.print("Invalid extension. Try again: ");
+            //     file_name = a2.scan.nextLine();
+            //     extn = file_name.substring(file_name.length()-4);
+            // }
+            String extn="abcd";
+            if (file_name.length()>4)
                 extn = file_name.substring(file_name.length()-4);
-            }
+            while (file_name.length()<5 || !extn.equals(".zip")) {
+                System.out.println("Invalid file name. Try again:");
+                file_name = a2.scan.nextLine();
+                if (file_name.length()>4)
+                    extn = file_name.substring(file_name.length()-4);
+        }
         }
         else if (a2.assmlist.get(sel4).getType()=="Quiz"){
         System.out.print(a2.assmlist.get(sel4).getQ()+" ");
@@ -417,7 +434,6 @@ class Video{
         return this.time;
     }
 }
-
 interface Classes{
     public void view();
 }
@@ -473,7 +489,6 @@ class Slide{
         return this.uploader;
     }
 }
-
 class Assignment implements Assesment{
     private Instructor uploader;
     private String p_st;
