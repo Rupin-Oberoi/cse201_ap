@@ -28,7 +28,10 @@ public class a2 {
         sel1 = scan.nextInt();
         @SuppressWarnings("unused")
         String misc = scan.nextLine();
-        if (sel1==1){
+        if (sel1==3){
+            break;
+        }
+        else if (sel1==1){
             int len = instlist.size();
             for (int i = 0; i<len;i++){
                 System.out.println(i+" - "+instlist.get(i).getName());
@@ -52,6 +55,7 @@ public class a2 {
         }
         int sel3 = -1;
         int sel4 = -1;
+        int sel5 = -1;
         if (sel1==1){
             while(sel3!=9){
                 System.out.println("Welcome "+ i_user.getName());
@@ -82,7 +86,22 @@ public class a2 {
                     }
                 }
                 else if (sel3==3){
-
+                    for (int i=0;i<vidlist.size();i++){
+                        System.out.println("Title: "+vidlist.get(i).getTitle());
+                        System.out.println("Video file: "+vidlist.get(i).getFile());
+                        System.out.println("Time of upload: "+ dtf.format(vidlist.get(i).getTime()));
+                        System.out.println("Uploaded by: "+vidlist.get(i).getUpld().getName());
+                        System.out.println(" ");
+                    }
+                    for (int i =0; i<sldlist.size();i++){
+                        System.out.println("Title: "+sldlist.get(i).getTopic());
+                        for (int j=0; j<sldlist.get(i).getNsld();j++){
+                            System.out.println("Slide "+j+": "+sldlist.get(i).getSlides()[j]);
+                        }
+                        System.out.println("Time of upload: "+dtf.format(sldlist.get(i).getTime()));
+                        System.out.println("Uploaded by: "+sldlist.get(i).getUpldr().getName());
+                        System.out.println(" ");
+                    }
                 }
                 else if (sel3==6){
                     for (int i=0; i<assmlist.size();i++){
@@ -102,6 +121,36 @@ public class a2 {
                     for (int i=0; i<assmlist.size();i++){
                         System.out.println("ID: "+i+" "+assmlist.get(i).getQ()+" Max Marks: "+ assmlist.get(i).getMax()+"\n");
                     }
+                }
+                else if (sel3==5){
+                    System.out.println("List of assesments: ");
+                    for (int i =0;i<assmlist.size();i++){
+                        if(assmlist.get(i).getType()=="Assignment"){
+                            System.out.println("ID: "+i+" Assignemnt: "+ assmlist.get(i).getQ()+" "+"Max Marks "+ assmlist.get(i).getMax());
+                        }
+                        else if (assmlist.get(i).getType()=="Quiz"){
+                            System.out.println("ID: "+i+" Question: "+assmlist.get(i).getQ());
+                        }
+                    }
+                    System.out.print("Enter ID of assesment to view submissions: ");
+                    sel4 = scan.nextInt();
+                    misc = scan.nextLine();
+                    System.out.println("Choose ID from these ungraded submissions");
+                    for (int i =0; i<sublist.size();i++){
+                        if (sublist.get(i).getAssesment()==assmlist.get(sel4) && sublist.get(i).getStatus()==0){
+                            System.out.println("ID "+i+" "+sublist.get(i).getStudent().getName());
+                        }
+                    }
+                    sel5 = scan.nextInt();
+                    misc = scan.nextLine();
+                    System.out.println("Submission: "+sublist.get(sel5).getAns());
+                    System.out.println("Max Marks = "+ assmlist.get(sel4).getMax());
+                    System.out.print("Enter marks scored: ");
+                    int marks_scored = scan.nextInt();
+                    misc = scan.nextLine();
+                    sublist.get(sel5).setMarks(marks_scored);
+                    sublist.get(sel5).setStatus(1);
+                    sublist.get(sel5).setChecker(i_user);
                 }
                 else if (sel3==7){
                     for (int i=0;i<commlist.size();i++){
@@ -133,7 +182,7 @@ public class a2 {
                         for (int j=0; j<sldlist.get(i).getNsld();j++){
                             System.out.println("Slide "+j+": "+sldlist.get(i).getSlides()[j]);
                         }
-                        System.out.println("Time of upload: "+dtf.format(vidlist.get(i).getTime()));
+                        System.out.println("Time of upload: "+dtf.format(sldlist.get(i).getTime()));
                         System.out.println("Uploaded by: "+sldlist.get(i).getUpldr().getName());
                         System.out.println(" ");
                     }
@@ -145,26 +194,23 @@ public class a2 {
                 }
                 else if (sel3==3){
                     s_user.seePending();
-                    // System.out.print("Enter ID of assignment: ");
-                    // sel4 = scan.nextInt();
-                    // misc = scan.nextLine();
-                    // String file_name;
-                    // String extn;
-                    // if (assmlist.get(sel4).getType()=="Assignment"){
-                    //     System.out.print("Enter file name of submission: ");
-                    //     file_name = scan.nextLine();
-                    //     extn = file_name.substring(file_name.length()-4);
-                    //     while (!extn.equals(".zip")){
-                    //         System.out.print("Invalid extension. Try again: ");
-                    //         file_name = scan.nextLine();
-                    //         extn = file_name.substring(file_name.length()-4);
-                    //     }
-                    // }
-                    // else if (assmlist.get(sel4).getType()=="Quiz"){
-                    //     System.out.print(assmlist.get(sel4).getQ()+" ");
-                    //     file_name = scan.nextLine();
-                    // }
-
+                }
+                else if (sel3==4){
+                    System.out.println("Graded submissions");
+                    for (int i=0; i<sublist.size();i++){
+                        if (sublist.get(i).getStudent()==s_user && sublist.get(i).getStatus()==1){
+                            System.out.println("Submission: "+ sublist.get(i).getAns());
+                            System.out.println("Marks scored :"+sublist.get(i).getScore());
+                            System.out.println("Graded by: "+sublist.get(i).getChecker().getName());
+                        }
+                    }
+                    System.out.println("Ungraded submissions");
+                    for (int i=0; i<sublist.size();i++){
+                        if (sublist.get(i).getStudent()==s_user && sublist.get(i).getStatus()==0){
+                            System.out.println("Submission: "+ sublist.get(i).getAns());
+                            
+                        }
+                    }
                 }
                 else if (sel3==5){
                     for (int i=0;i<commlist.size();i++){
@@ -177,6 +223,7 @@ public class a2 {
                 }
             }
         }
+        
     }
 }   
 }
@@ -186,10 +233,38 @@ class Submission {
     private String answer;
     private int marks=0;
     private Assesment problem;
+    private int grade_status= 0;    // 0 for ungraded and 1 for graded
     public Submission(Student s, String a, Assesment as){
         this.doer  =s;
         this.answer = a;
         this.problem = as;
+    }
+    public Student getStudent(){
+        return this.doer;
+    }
+    public int getStatus(){
+        return this.grade_status;
+    }
+    public String getAns(){
+        return this.answer;
+    }
+    public int getScore(){
+        return this.marks;
+    }
+    public Instructor getChecker(){
+        return this.checker;
+    }
+    public Assesment getAssesment(){
+        return this.problem;
+    }
+    public void setMarks(int m){
+        this.marks = m;
+    }
+    public void setStatus(int a){
+        this.grade_status=a;
+    }
+    public void setChecker(Instructor in){
+        this.checker = in;
     }
 }
 class Instructor implements User{
@@ -206,10 +281,9 @@ class Instructor implements User{
         return this.id;
     }
     public void putSlide(){
-        System.out.println("Enter topic of slides");
+        System.out.print("Enter topic of slides: ");
         String sld_tpc = a2.scan.nextLine();
-        System.out.println("a"+sld_tpc);
-        System.out.println("Enter number of slides");
+        System.out.print("Enter number of slides: ");
         int n_sld = a2.scan.nextInt();
         @SuppressWarnings("unused")
         String misc = a2.scan.nextLine();
@@ -224,7 +298,7 @@ class Instructor implements User{
     public void putVideo(){
         System.out.print("Enter topic of video:- ");
         String vid_title = a2.scan.nextLine();
-        System.out.println("Enter filename of video");
+        System.out.print("Enter filename of video:- ");
         String vid_name = a2.scan.nextLine();
         int len1 = vid_name.length();
         String vid_ext = vid_name.substring(len1-4);
@@ -240,7 +314,7 @@ class Instructor implements User{
     public void putAssignment(){
         System.out.print("Enter problem statement: ");
         String pst = a2.scan.nextLine();
-        System.out.print("Enter max marks");
+        System.out.print("Enter max marks: ");
         int maxm = a2.scan.nextInt();
         @SuppressWarnings("unused")
         String misc = a2.scan.nextLine();
