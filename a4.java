@@ -1,23 +1,20 @@
 import java.util.*;
 public class a4 {
     public static Scanner scan = new Scanner(System.in);
-    public static void main(String[] args) {
-        
+    public static void main(String[] args) { 
         System.out.println("Hit enter to initialise the game");
         String misc = scan.nextLine();
         Game g1 = new Game();
         g1.main();
-        
     }
 }
 class Game{
     private static int curr_hop = 0;
-    private int curr_pos = 0;
     private Carpet my_carpet;
     private Player my_player;
     public Game(){
     Carpet crpt = new Carpet();
-    Player plyr = new Player();
+    Player plyr = new Player(this);
     this.my_carpet = crpt;
     this.my_player = plyr;
         Toy a = new Toy("A");
@@ -62,39 +59,39 @@ class Game{
         my_carpet.addToy(t);
     }
     private static Random rand = new Random();
-    private static Calculator<Integer> cal = new Calculator<Integer>(0,0);
-    public static Calculator<String> cal1 = new Calculator<String>("", "");
+    private static Calculator<Integer> cal = new Calculator<Integer>();
+    public static Calculator<String> cal1 = new Calculator<String>();
     public void main() {
         System.out.println("The game is ready");
         while (curr_hop<5){
             System.out.println("Hit enter to play your hop number "+(curr_hop+1));
             String misc = a4.scan.nextLine();
             int reach =0;
-            reach = rand.nextInt(25)+1;
+            reach = rand.nextInt(25)+1;  //can jump from 1 to 25
             if (reach%2==1 && reach<21){
                 boolean res = false;
                 boolean choice=false;
                 String chosen="";
                 while(!choice){
-                    System.out.println("You landed on tile" + reach);
+                    System.out.println("You landed on tile " + reach);
                     System.out.println("Question answer round. Integer or strings?");
                     chosen = a4.scan.nextLine();
-                    if (chosen.equals("Integer") || chosen.equals("String")){
+                    if (chosen.toLowerCase().equals("integer") || (chosen.toLowerCase().equals("string"))){
                     choice = true;
                     }
                     else{
                     System.out.println("Invalid choice. Try again");
                     }
                 }
-                if (chosen.equals("Integer")){
+                if (chosen.toLowerCase().equals("integer")){
                     int[] arr = rand.ints(2, Integer.MIN_VALUE, Integer.MAX_VALUE).toArray();
                     int a = arr[0], b = arr[1];
                     cal.setOpr1(a);
                     cal.setOpr2(b);
                     System.out.println("Calculate the result of "+ arr[0] + " divided by "+ arr[1]);
-                    res = cal.generate_int();
+                    res = cal.check_int();
                 }
-                else if (chosen.equals("String")){
+                else if (chosen.toLowerCase().equals("string")){
                     int len1 = rand.nextInt(3) + 3;
                     int len2 = rand.nextInt(3) + 3;
                     String s1 = "";
@@ -110,7 +107,7 @@ class Game{
                     }
                     cal1.setOpr1(s1);
                     cal1.setOpr2(s2);
-                    res = cal1.generate_str();
+                    res = cal1.check_str();
                 }
             if (res==true){
                 System.out.println("Correct answer!");
@@ -123,7 +120,8 @@ class Game{
                 System.out.println("Wrong answer!");
             }}
             else if (reach%2==0 && reach<21) {
-                System.out.println("You reached on the "+reach +" tile. Cool!");
+                System.out.println("You landed on tile "+reach);
+                System.out.println("Congratulations! You win toy "+ my_carpet.getList().get(reach-1).getName());
                 Toy toGive = my_carpet.getList().get(reach-1).clone();
                 my_player.getBucket().addToy(toGive);
             }
@@ -132,27 +130,23 @@ class Game{
             }
         curr_hop++;   
         }
+        System.out.println("\n   GAME OVER");
         System.out.println("The toys won by you are: ");
         for (int i=0; i<my_player.getBucket().getList().size(); i++){
             System.out.print(my_player.getBucket().getList().get(i).getName()+" ");
         }
     }
 }
-
 class Calculator<T>{
     private T opr1;
     private T opr2;
-    public Calculator(T a, T b){
-        this.opr1 = a;
-        this.opr2 = b;
-    }
     public void setOpr1(T a){
         this.opr1 = a;
     }
     public void setOpr2(T b){
         this.opr2 = b;
     }
-    public boolean generate_int(){
+    public boolean check_int(){
         int a = (int)this.opr1;
         int b = (int)this.opr2;
         int correct = a/b;
@@ -174,7 +168,7 @@ class Calculator<T>{
     }
         return false;
     }
-    public boolean generate_str(){
+    public boolean check_str(){
         System.out.println("Calculate the concatenation of strings "+ opr1 +" and "+opr2);
         String correct_str = ((String)opr1).concat((String)opr2);
         String ans = a4.scan.nextLine();
@@ -183,7 +177,6 @@ class Calculator<T>{
         return false;
     }
 }
-
 class Carpet{
     private ArrayList<Toy> al;
     public Carpet(){
@@ -196,7 +189,6 @@ class Carpet{
     public ArrayList<Toy> getList(){
         return this.al;
     }
-
 }
 class Toy implements Cloneable{
     private String name;
@@ -219,14 +211,15 @@ class Toy implements Cloneable{
 }
 class Player{
     private Bucket bckt;
-    public Player(){
+    private Game my_game;
+    public Player(Game g){
+        this.my_game = g;
         Bucket b = new Bucket();
         this.bckt = b;
     }
     public Bucket getBucket(){
         return this.bckt;
     }
-    
 }
 class Bucket{
     private ArrayList<Toy> bl;
